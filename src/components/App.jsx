@@ -1,61 +1,69 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 
+import { Phonebook } from './Phonebook/Phonebook';
+import { Contacts } from './Contacts/Contacts';
+import { Filter } from './Filter/Filter';
+
 export class App extends Component {
   state = {
-    contacts: [],
-    name: '',
-    number: '',
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
   };
 
-  addContact = ({ target }) => {
+  addContact = values => {
+    const { contacts } = this.state;
+
+    const checkContact = contacts.some(
+      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+    );
+
+    checkContact
+      ? alert(`${values.name} is already in contacts`)
+      : this.setState(prevState => {
+          return {
+            contacts: [...prevState.contacts, { ...values, id: nanoid() }],
+          };
+        });
+  };
+
+  updateFilter = value => {
     this.setState({
-      [target.name]: target.value,
-      contacts: [{ name: this.state.name, id: nanoid() }],
+      filter: value,
     });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  handleDelete = contactId => {
+    const newContactsList = this.state.contacts.filter(
+      contact => contact.id !== contactId
+    );
+
     this.setState({
-      [e.target.name]: e.target.value,
+      contacts: newContactsList,
     });
-    console.log(this.state);
   };
 
   render() {
+    const { contacts, filter } = this.state;
+    const filtredContacts = contacts.filter(contact => {
+      return contact.name.toLowerCase().includes(filter.toLowerCase());
+    });
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
         <h1>Phonebook</h1>
-        <label htmlFor="name">
-          Name
-          <input
-            type="text"
-            name="name"
-            placeholder="Rosie Simpson"
-            required
-            onChange={this.addContact}
-          />
-        </label>
-        <label htmlFor="number">
-          Number
-          <input
-            type="tel"
-            name="number"
-            placeholder="123-45-67"
-            required
-            onChange={this.addContact}
-          />
-        </label>
-        <button type="submit">Add contact</button>
+        <Phonebook onAddContact={this.addContact}></Phonebook>
         <h2>Contacts</h2>
-        <ul>
-          <li>
-            <span>{this.state.name} </span>
-            <span>{this.state.number}</span>
-          </li>
-        </ul>
-      </form>
+        <Filter onFilter={this.updateFilter}></Filter>
+        <Contacts
+          contactsList={filtredContacts}
+          onDelete={this.handleDelete}
+        ></Contacts>
+      </div>
     );
   }
 }
