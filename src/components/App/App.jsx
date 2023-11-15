@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 
-import { Phonebook } from './Phonebook/Phonebook';
-import { Contacts } from './Contacts/Contacts';
-import { Filter } from './Filter/Filter';
+import { Phonebook } from '../Phonebook/Phonebook';
+import { Contacts } from '../Contacts/Contacts';
+import { Filter } from '../Filter/Filter';
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
@@ -54,12 +55,16 @@ export class App extends Component {
       return contact.name.toLowerCase().includes(filter.toLowerCase());
     });
     return (
-      <div>
+      <div className={css.container}>
         <h1>Phonebook</h1>
-        <Phonebook onAddContact={this.addContact}></Phonebook>
+        <Phonebook
+          className={css.phonebook}
+          onAddContact={this.addContact}
+        ></Phonebook>
         <h2>Contacts</h2>
-        <Filter onFilter={this.updateFilter}></Filter>
+        <Filter className={css.filter} onFilter={this.updateFilter}></Filter>
         <Contacts
+          className={css.contacts}
           contactsList={filtredContacts}
           onDelete={this.handleDelete}
         ></Contacts>
