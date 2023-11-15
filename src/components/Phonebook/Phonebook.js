@@ -4,12 +4,8 @@ import * as Yup from 'yup';
 import css from './Phonebook.module.css';
 
 const schema = Yup.object().shape({
-  name: Yup.string()
-    .min(3, 'Name must contains more than 3 leters')
-    .required('Please enter a name'),
-  number: Yup.string()
-    .matches(/^(\d{3}-\d{2}-\d{2})$/, 'Please enter 7 digit as 123-45-67)')
-    .required('Please enter a number'),
+  name: Yup.string().required('Please enter a name'),
+  number: Yup.string().required('Please enter a number'),
 });
 
 export const Phonebook = ({ onAddContact }) => {
